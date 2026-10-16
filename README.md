@@ -81,8 +81,8 @@ A estratégia de artefatos é **B: preparo pequeno e seguro no startup**.
 Sem modelos locais válidos, `app/resources.py` prepara o demo original de 2.880
 pontos uma vez por processo e mantém pipeline/métricas em `st.cache_resource`.
 O primeiro acesso pode levar alguns segundos; filtros e uploads reutilizam o
-cache. Reiniciar o servidor ou limpar o cache exige novo preparo. Somente o CSV
-demo com hash conhecido pode alimentar esse preparo; uploads nunca treinam.
+cache. Reiniciar o servidor ou limpar o cache exige novo preparo. Somente conteúdo
+idêntico ao CSV demo bundled pode alimentar esse preparo; uploads nunca treinam.
 Modelos ausentes, corrompidos ou métricas inválidas ativam um aviso explícito de
 modo demo. A API permanece independente e exige `python -m src.train`.
 
@@ -428,7 +428,7 @@ verificações executadas e sugestões de commits separados.
 [Relatório da Etapa 2](reports/anomaly_calibration_report.md) registra calibração,
 eventos, testes, verificação visual e sugestões de commits desta rodada.
 
-A verificação final aprovou **133 testes**. Regressões incluem startup com modelos
+A verificação final aprovou **139 testes**. Regressões incluem startup com modelos
 ausentes/corrompidos, métricas inválidas, preparo limitado ao demo conhecido e
 reutilização sem `fit` após interações. O notebook 03 executou oito células de
 código sem erro. Consulte o [relatório final](reports/deploy_readiness_report.md)

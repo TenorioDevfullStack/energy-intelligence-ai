@@ -1,6 +1,5 @@
 """Cached dashboard startup; preparation is separate from inference and uploads."""
 from dataclasses import dataclass
-import hashlib
 import io
 import json
 from pathlib import Path
@@ -11,9 +10,9 @@ import streamlit as st
 
 from src.data_processing import load_data
 from src.inference import EnergyPipeline, ModelArtifactError
+from src import utils
 from app.metrics import validate_dashboard_report
 
-DEMO_SHA256 = "185e52b062f1ff26241f1b2ee543ac1eef48d0c601e54055c85d159119c94b75"
 ASSET_NAMES = ("anomaly_model.joblib", "forecast_model.joblib", "metrics.json")
 
 
@@ -39,13 +38,13 @@ def resource_signature(model_dir: Path) -> tuple:
 
 @st.cache_resource(show_spinner="Preparando a demonstração energética…")
 def load_demo_resources(demo_content: bytes) -> DashboardResources:
-    """Build the bounded bundled demo once per process, never an uploaded CSV.
+    """Build the installed bundled demo once per process, never an uploaded CSV.
 
-    The digest limits automatic training to the original 2,880 synthetic points.
+    Compare with the bundled file itself, without a manually maintained digest.
     Temporary artifacts are loaded and removed; configured local models are intact.
     Streamlit serializes concurrent cache misses for this resource.
     """
-    if hashlib.sha256(demo_content).hexdigest() != DEMO_SHA256:
+    if demo_content != utils.DATASET_PATH.read_bytes():
         raise ValueError("O preparo automático aceita somente o dataset demo original.")
     from src.train import train_project
 
@@ -60,7 +59,10 @@ def load_demo_resources(demo_content: bytes) -> DashboardResources:
 
 @st.cache_resource(show_spinner=False, max_entries=4)
 def load_dashboard_resources(model_dir: str, revision: tuple, demo_content: bytes) -> DashboardResources:
-    """Use valid persisted resources, otherwise an explicitly identified demo."""
+    """Load persisted models, otherwise prepare only validated bundled bytes.
+
+    demo_content comes from DATASET_PATH; uploaded bytes go only to inference.
+    """
     folder = Path(model_dir)
     try:
         pipeline = EnergyPipeline.load(folder)

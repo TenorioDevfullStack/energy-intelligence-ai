@@ -2,6 +2,7 @@
 import io
 import json
 import copy
+from unittest.mock import patch
 
 import pandas as pd
 import pytest
@@ -96,3 +97,83 @@ def test_structurally_corrupt_metrics_fall_back_before_rendering(tmp_path, mutat
     (tmp_path / "metrics.json").write_text(json.dumps(report), encoding="utf-8")
     loaded = load_dashboard_resources(str(tmp_path), resource_signature(tmp_path), content)
     assert loaded.prepared_demo
+
+
+@pytest.mark.parametrize("line_ending", [b"\n", b"\r\n"])
+def test_bundled_demo_preparation_uses_installed_file_bytes(tmp_path, monkeypatch, line_ending):
+    import app.resources as resources
+    import src.utils
+
+    content = DATASET_PATH.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", line_ending)
+    bundled = tmp_path / "energy_consumption_30days.csv"
+    bundled.write_bytes(content)
+    monkeypatch.setattr(src.utils, "DATASET_PATH", bundled)
+    resources.load_demo_resources.clear()
+    demo = resources.load_demo_resources(content)
+    assert demo.prepared_demo
+    assert demo.metrics["anomaly_threshold_calibration"]["selected_threshold"] == 68
+
+
+def test_one_byte_change_to_bundled_demo_is_rejected_before_training():
+    from app.resources import load_demo_resources
+
+    content = DATASET_PATH.read_bytes()
+    changed = bytes([content[0] ^ 1]) + content[1:]
+    assert len(changed) == len(content)
+    with patch("src.train.train_project", side_effect=AssertionError("Must reject before training")) as train:
+        with pytest.raises(ValueError, match="demo"):
+            load_demo_resources(changed)
+    train.assert_not_called()
+
+
+def test_valid_upload_only_runs_inference_after_demo_startup(tmp_path, monkeypatch):
+    import app.resources as resources
+    import src.utils
+
+    content = DATASET_PATH.read_bytes()
+    resources.load_dashboard_resources(str(tmp_path), resources.resource_signature(tmp_path), content)
+    monkeypatch.setattr(src.utils, "MODEL_DIR", tmp_path)
+    upload = io.BytesIO(b"timestamp,active_power_kw,voltage_v,power_factor\n2026-02-01 18:15:00,50,127,.94\n")
+    with patch("streamlit.file_uploader", return_value=upload), \
+            patch.object(resources, "load_demo_resources", side_effect=AssertionError("Upload must reuse prepared demo")) as prepare, \
+            patch("src.train.train_project", side_effect=AssertionError("Upload must not train")) as train, \
+            patch.object(IsolationForest, "fit", side_effect=AssertionError("Upload must not fit")), \
+            patch.object(RandomForestRegressor, "fit", side_effect=AssertionError("Upload must not fit")):
+        app = AppTest.from_file(str(ROOT / "app/dashboard.py"), default_timeout=60).run()
+    assert not app.exception and not app.error
+    assert any(metric.label == "Pontos anômalos" and metric.value == "1" for metric in app.metric)
+    prepare.assert_not_called()
+    train.assert_not_called()
+
+
+def test_invalid_upload_is_rejected_before_demo_preparation(tmp_path, monkeypatch):
+    import app.resources as resources
+    import src.utils
+
+    monkeypatch.setattr(src.utils, "MODEL_DIR", tmp_path)
+    with patch("streamlit.file_uploader", return_value=io.BytesIO(b"not,a,valid,csv\n")), \
+            patch.object(resources, "load_demo_resources", side_effect=AssertionError("Invalid upload must not prepare")) as prepare, \
+            patch("src.train.train_project", side_effect=AssertionError("Invalid upload must not train")) as train, \
+            patch.object(IsolationForest, "fit", side_effect=AssertionError("Invalid upload must not fit")), \
+            patch.object(RandomForestRegressor, "fit", side_effect=AssertionError("Invalid upload must not fit")):
+        app = AppTest.from_file(str(ROOT / "app/dashboard.py"), default_timeout=60).run()
+    assert not app.exception
+    assert any("CSV incompatível" in item.value for item in app.error)
+    prepare.assert_not_called()
+    train.assert_not_called()
+
+
+def test_persisted_models_avoid_automatic_demo_preparation(tmp_path):
+    import app.resources as resources
+
+    content = DATASET_PATH.read_bytes()
+    demo = resources.load_demo_resources(content)
+    demo.pipeline.save(tmp_path)
+    (tmp_path / "metrics.json").write_text(json.dumps(demo.metrics), encoding="utf-8")
+    with patch.object(resources, "load_demo_resources", side_effect=AssertionError("Models are already persisted")) as prepare, \
+            patch("src.train.train_project", side_effect=AssertionError("Must load persisted models")) as train:
+        loaded = resources.load_dashboard_resources(str(tmp_path), resources.resource_signature(tmp_path), content)
+    assert not loaded.prepared_demo
+    assert loaded.pipeline.anomaly["threshold"] == 68
+    prepare.assert_not_called()
+    train.assert_not_called()
