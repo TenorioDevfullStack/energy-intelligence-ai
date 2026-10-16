@@ -20,3 +20,11 @@ __pycache__/
 # Sistema
 .DS_Store
 Thumbs.db
+# Generated ML artifacts and local verification files
+models/*.joblib
+models/metrics.json
+data/outputs/*.csv
+.pytest_cache/
+.runtime-tmp/
+.runtime-tools/
+reports/*.log

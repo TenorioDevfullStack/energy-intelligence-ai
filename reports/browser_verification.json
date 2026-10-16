@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "Demo rendered with KPI cards and Plotly load curve",
+    "Anomaly tab and recent event table rendered",
+    "Performance tab rendered persisted holdout metrics",
+    "Missing columns shown as clear CSV error",
+    "Compatible upload without labels analyzed; no invented supervised metrics",
+    "CSV download verified (576 rows)"
+  ],
+  "page_errors": []
+}

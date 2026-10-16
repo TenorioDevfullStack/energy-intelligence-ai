@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-13",
+  "statuses": {
+    "/health": 200,
+    "/docs": 200,
+    "/openapi.json": 200,
+    "/analyze": 200,
+    "/predict/anomaly": 200,
+    "/predict/forecast": 200,
+    "invalid_input": 422,
+    "dashboard": 200
+  },
+  "holdout_csv_matches_inference": true,
+  "holdout_rows": 576,
+  "selected_candidate_used_for_all_demo_rows": true
+}

@@ -1,0 +1,47 @@
+{
+  "numpy": {
+    "version": "2.5.3",
+    "requires_python": ">=3.12",
+    "linux_or_universal_wheel": true
+  },
+  "pandas": {
+    "version": "3.0.6",
+    "requires_python": ">=3.11",
+    "linux_or_universal_wheel": true
+  },
+  "scikit-learn": {
+    "version": "1.9.1",
+    "requires_python": ">=3.11",
+    "linux_or_universal_wheel": true
+  },
+  "joblib": {
+    "version": "1.6.0",
+    "requires_python": ">=3.10",
+    "linux_or_universal_wheel": true
+  },
+  "plotly": {
+    "version": "6.9.0",
+    "requires_python": ">=3.8",
+    "linux_or_universal_wheel": true
+  },
+  "streamlit": {
+    "version": "1.65.0",
+    "requires_python": ">=3.10",
+    "linux_or_universal_wheel": true
+  },
+  "fastapi": {
+    "version": "0.143.0",
+    "requires_python": ">=3.10",
+    "linux_or_universal_wheel": true
+  },
+  "pydantic": {
+    "version": "2.14.0",
+    "requires_python": ">=3.10",
+    "linux_or_universal_wheel": true
+  },
+  "uvicorn": {
+    "version": "0.54.0",
+    "requires_python": ">=3.10",
+    "linux_or_universal_wheel": true
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-16",
+  "checks": [
+    "API: health/old endpoints/events/docs 200, invalid policy 422, threshold68 and grouped 3+1 points",
+    "Demo holdout Events: 4 suspected, 0 confirmed, 3 critical, duration0; table and timeline",
+    "Performance: separately labelled Validation/Holdout comparisons and historical reference",
+    "Illustrative upload/download: one confirmed30min event + one suspected singleton; no retraining",
+    "Persistence override changes statuses while preserving selected period",
+    "Healthy CSV: stable empty-event table/timeline and zero cards",
+    "Invalid CSV message; source/filter changes reset browser date widget correctly",
+    "Empty/invalid timestamp uploads show friendly errors; valid labelled CSV retains event analysis",
+    "Mobile 390px: title, tabs, events cards and chart render without page overflow"
+  ],
+  "page_errors": [],
+  "console_errors": [],
+  "screenshots": [
+    "dashboard-overview.png",
+    "dashboard-events.png",
+    "dashboard-performance.png",
+    "dashboard-mobile.png"
+  ],
+  "api_events_example": {
+    "summary": {
+      "total_events": 2,
+      "confirmed_events": 1,
+      "suspected_events": 1,
+      "critical_events": 2,
+      "total_duration_minutes": 30.0,
+      "severity_distribution": {
+        "Baixo": 0,
+        "Moderado": 0,
+        "Alto": 0,
+        "Crítico": 2
+      }
+    },
+    "events": [
+      {
+        "event_id": "EVT-20260201T181500",
+        "start_timestamp": "2026-02-01T18:15:00",
+        "end_timestamp": "2026-02-01T18:45:00",
+        "duration_minutes": 30.0,
+        "number_of_points": 3,
+        "max_active_power_kw": 50.0,
+        "mean_active_power_kw": 50.0,
+        "expected_power_kw": 6.6645,
+        "max_relative_deviation_pct": 650.2438292445044,
+        "max_anomaly_score": 100.0,
+        "mean_anomaly_score": 100.0,
+        "severity": "Crítico",
+        "status": "confirmed",
+        "message": "Evento energético anômalo — severidade Crítico. Início: 01/02/2026 18:15; fim: 01/02/2026 18:45; duração: 30 min; 3 pontos. Potência máxima: 50.00 kW; potência esperada média: 6.66 kW; desvio relativo de maior magnitude: +650.2%; score máximo: 100.0/100."
+      },
+      {
+        "event_id": "EVT-20260202T181500",
+        "start_timestamp": "2026-02-02T18:15:00",
+        "end_timestamp": "2026-02-02T18:15:00",
+        "duration_minutes": 0.0,
+        "number_of_points": 1,
+        "max_active_power_kw": 50.0,
+        "mean_active_power_kw": 50.0,
+        "expected_power_kw": 10.104,
+        "max_relative_deviation_pct": 394.8535233570864,
+        "max_anomaly_score": 100.0,
+        "mean_anomaly_score": 100.0,
+        "severity": "Crítico",
+        "status": "suspected",
+        "message": "Evento energético anômalo — severidade Crítico. Início: 02/02/2026 18:15; fim: 02/02/2026 18:15; duração: 0 min; 1 pontos. Potência máxima: 50.00 kW; potência esperada média: 10.10 kW; desvio relativo de maior magnitude: +394.9%; score máximo: 100.0/100."
+      }
+    ],
+    "anomaly_metrics": null
+  }
+}

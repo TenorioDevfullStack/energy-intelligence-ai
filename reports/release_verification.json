@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-16",
+  "pytest": {
+    "passed": 133,
+    "failed": 0,
+    "warnings": 1,
+    "elapsed_seconds": 88.25
+  },
+  "train": {
+    "exit_code": 0,
+    "n_estimators": 200,
+    "threshold": 68,
+    "fresh_process_rows": 2880,
+    "fresh_process_events": 19
+  },
+  "notebook": {
+    "code_cells": 8,
+    "errors": 0
+  },
+  "api": {
+    "health": 200,
+    "docs": 200,
+    "anomaly": 200,
+    "forecast": 200,
+    "analyze": 200,
+    "events": 200,
+    "invalid": 422,
+    "unavailable_artifact_tests": 503
+  },
+  "browser": {
+    "checks_passed": 9,
+    "page_errors": 0,
+    "console_errors": 0,
+    "responsive_width": 390,
+    "demo_download_matches_source": true,
+    "analysis_download_rows": 576
+  },
+  "dependencies": {
+    "pip_check": "passed",
+    "linux_cp313_wheels": 50
+  },
+  "review": "independent review findings fixed and verified",
+  "commit": false,
+  "push": false,
+  "public_deploy": false
+}

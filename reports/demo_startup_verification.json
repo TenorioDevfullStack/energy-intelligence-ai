@@ -1,0 +1,8 @@
+{
+  "date": "2026-10-16",
+  "source": "copy of app/src/raw without models or outputs",
+  "cold_start_seconds": 24.111,
+  "cached_upload_seconds": 4.888,
+  "upload_confirmed_events": 1,
+  "writes_to_repo_model_directory": false
+}

@@ -1,0 +1,8 @@
+{
+  "health": 200,
+  "/analyze": 200,
+  "/predict/anomaly": 200,
+  "/predict/forecast": 200,
+  "docs": 200,
+  "dashboard": 200
+}
