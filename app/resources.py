@@ -13,7 +13,7 @@ from src.data_processing import load_data
 from src.inference import EnergyPipeline, ModelArtifactError
 from app.metrics import validate_dashboard_report
 
-DEMO_SHA256 = "fda66ff898f1c8e348fa42cd1b6c1f29a4091f032258f1b3663341e182df0995"
+DEMO_SHA256 = "185e52b062f1ff26241f1b2ee543ac1eef48d0c601e54055c85d159119c94b75"
 ASSET_NAMES = ("anomaly_model.joblib", "forecast_model.joblib", "metrics.json")
 
 
